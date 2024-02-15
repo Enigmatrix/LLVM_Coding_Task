@@ -72,7 +72,7 @@ std::string getVarName(const Instruction *ins)
 int main(int argc, char **argv)
 {
   // Read the IR file.
-  readSourceFile(argv[2]);
+  // readSourceFile(argv[2]);
   static LLVMContext Context;
   SMDiagnostic Err;
 
