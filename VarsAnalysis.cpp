@@ -120,11 +120,31 @@ void cfgTraversal(std::map<std::string, std::set<Instruction *>> *analysisMap, F
   std::set<Instruction *> emptySet;
   std::pair<BasicBlock *, std::set<Instruction *>> analysisNode = std::make_pair(entryBB, emptySet);
   traversalStack.push(analysisNode);
+  std::set<BasicBlock *> visited;
+  visited.insert(entryBB);
 
   while (!traversalStack.empty()){
 
     // Please write your code here
+    auto [bb, instrs] = std::move(traversalStack.top());
+    traversalStack.pop();
+    
+    auto label = getSimpleNodeLabel(bb);
+    
+    for (auto it = bb->begin(); it != bb->end(); it++) {
+      for (auto& use: it->operands()) {
+        if (!isa<Instruction>(use)) { continue; }
+        analysisMap->at(label).insert(cast<Instruction>(use.get()));
+      }
+    }
 
+    auto last = bb->getTerminator();
+    for (int i = 0; i < last->getNumSuccessors(); i++) {
+      auto succ = last->getSuccessor(i);
+      if (visited.find(succ) != visited.end()) { continue; }
+      visited.insert(succ);
+      traversalStack.push(make_pair(succ, emptySet));
+    }
   }
   
 }
