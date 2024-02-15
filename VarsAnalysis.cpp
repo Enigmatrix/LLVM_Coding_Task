@@ -135,5 +135,23 @@ void printAnalysisMap(std::map<std::string, std::set<Instruction *>> analysisMap
   errs() << "PRINTING ANALYSIS MAP:\n";
 
   // Please write your code here
-
+  for (auto [label, instrs] : analysisMap) {
+    errs() << label << ": {";
+    auto first = true;
+    for (auto ins: instrs) {
+      // auto name = getVarName(ins);
+      auto name = ins->getName();
+      //ins->dump();
+      //auto alloca = dyn_cast<AllocaInst>(ins);
+      //if (alloca) alloca->dump();
+      if (name.empty()) { continue; }
+      if (first) {
+        first = false;
+      } else {
+        errs() << ",";
+      }
+      errs() << name;
+    }
+    errs() << "}\n";
+  }
 }
